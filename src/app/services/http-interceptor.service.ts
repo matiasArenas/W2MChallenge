@@ -9,12 +9,12 @@ export class HttpInterceptorService implements HttpInterceptor {
 
   constructor(private supeHeroesService: SuperHeroesService) {}
 
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+  intercept = (req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> => {
     this.supeHeroesService.showSpinner();
     return next.handle(req).pipe(
       finalize(() => {
         this.supeHeroesService.hideSpinner();
       })
     );
-  }
+  };
 }

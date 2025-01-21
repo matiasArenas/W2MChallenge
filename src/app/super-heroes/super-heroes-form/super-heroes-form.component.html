@@ -8,14 +8,16 @@
         <mat-label>ID de Heroe</mat-label>
         <input matInput id="id" formControlName="id" />
       </mat-form-field>
-      <div class="mb" *ngIf="form.get('id')?.invalid && form.get('id')?.touched">
-        <small *ngIf="form.get('id')?.hasError('required')"
-          >El id es requerido.</small
-        >
-        <small *ngIf="form.get('id')?.hasError('pattern')"
-          >Solo se permiten números.</small
-        >
-      </div>
+      <mat-error
+        class="mb"
+        *ngIf="form.get('id')?.hasError('required') && form.get('id')?.touched"
+        >El id es requerido.</mat-error
+      >
+      <mat-error
+        class="mb"
+        *ngIf="form.get('id')?.hasError('pattern') && form.get('id')?.touched"
+        >Solo se permiten números.</mat-error
+      >
     </div>
 
     <div class="container container-column">
@@ -23,15 +25,20 @@
         <mat-label>Nombre de Heroe</mat-label>
         <input customUppercase matInput id="name" formControlName="name" />
       </mat-form-field>
-
-      <div class="mb" *ngIf="form.get('name')?.invalid && form.get('name')?.touched">
-        <small *ngIf="form.get('name')?.hasError('required')"
-          >El nombre es requerido.</small
-        >
-        <small *ngIf="form.get('name')?.hasError('pattern')"
-          >Solo se permiten letras.</small
-        >
-      </div>
+      <mat-error
+        class="mb"
+        *ngIf="
+          form.get('name')?.hasError('required') && form.get('name')?.touched
+        "
+        >El nombre es requerido.</mat-error
+      >
+      <mat-error
+        class="mb"
+        *ngIf="
+          form.get('name')?.hasError('pattern') && form.get('name')?.touched
+        "
+        >Solo se permiten letras.</mat-error
+      >
     </div>
 
     <div class="button-container">

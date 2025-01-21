@@ -14,12 +14,13 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class SuperHeroesFormComponent implements OnInit, OnDestroy {
   form: FormGroup = new FormGroup({});
-   heroesSubscription: Subscription = new Subscription();
+  heroesSubscription: Subscription = new Subscription();
   isEditMode = false;
   title = '';
   heroName = '';
   heroId!: number;
-  lastHeroId!:number;
+  lastHeroId!: number;
+
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
@@ -36,7 +37,7 @@ export class SuperHeroesFormComponent implements OnInit, OnDestroy {
 
   initForm() {
     this.form = this.fb.group({
-      id: [this.isEditMode ? this.heroId : this.lastHeroId , [Validators.required, Validators.pattern(/^[0-9]+$/)]],
+      id: [this.isEditMode ? this.heroId : this.lastHeroId, [Validators.required, Validators.pattern(/^[0-9]+$/)]],
       name: [
         this.isEditMode ? this.heroName : '',
         [Validators.required, Validators.pattern(/^[A-Za-z\s]+$/)],
@@ -49,7 +50,7 @@ export class SuperHeroesFormComponent implements OnInit, OnDestroy {
     if (id) {
       this.isEditMode = true;
       this.heroesSubscription.add(
-        this.superHeroesService.getHeroeById(parseInt(id)).subscribe((data) => { console.log('data',data)
+        this.superHeroesService.getHeroeById(parseInt(id)).subscribe((data) => {
           if (data) {
             this.heroName = data?.name;
             this.heroId = data?.id;
@@ -60,26 +61,26 @@ export class SuperHeroesFormComponent implements OnInit, OnDestroy {
     this.setTitle(this.isEditMode);
   }
 
-  getLastHeroId(){
+  getLastHeroId() {
     this.heroesSubscription.add(
-      this.superHeroesService.heroesSubject.subscribe((data:SuperHeroes[])=>{
-        data.map((h)=>{
+      this.superHeroesService.heroesSubject.subscribe((data: SuperHeroes[]) => {
+        data.forEach((h) => {
           this.lastHeroId = h.id + 1;
-        })
+        });
       })
     );
   }
 
-  setTitle(editHero: boolean) {
+  setTitle = (editHero: boolean) => {
     this.title = editHero ? 'Edicion de super héroes' : 'Alta de super héroes';
-  }
+  };
 
-  onSubmit() {
+  onSubmit = () => {
     if (this.form.valid) {
       if (this.isEditMode) {
         this.heroesSubscription.add(
-          this.superHeroesService.updateHero(this.form.value, this.heroId).subscribe((data)=>{
-            if(data){
+          this.superHeroesService.updateHero(this.form.value, this.heroId).subscribe((data) => {
+            if (data) {
               this.showSnackbar('Héroe editado exitosamente', 'Cerrar');
               this.router.navigate(['']);
             }
@@ -87,8 +88,8 @@ export class SuperHeroesFormComponent implements OnInit, OnDestroy {
         );
       } else {
         this.heroesSubscription.add(
-          this.superHeroesService.createHero(this.form.value).subscribe((data)=>{
-            if(data){
+          this.superHeroesService.createHero(this.form.value).subscribe((data) => {
+            if (data) {
               this.showSnackbar('Héroe cargado exitosamente', 'Cerrar');
               this.router.navigate(['']);
             }
@@ -96,15 +97,15 @@ export class SuperHeroesFormComponent implements OnInit, OnDestroy {
         );
       }
     }
-  }
+  };
 
-  showSnackbar(message: string, action: string): void {
+  showSnackbar = (message: string, action: string): void => {
     this.snackBar.open(message, action, {
       duration: 3000,
       horizontalPosition: 'left',
       verticalPosition: 'bottom',
     });
-  }
+  };
 
   ngOnDestroy(): void {
     this.heroesSubscription.unsubscribe();

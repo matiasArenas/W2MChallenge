@@ -15,28 +15,28 @@ export class SuperHeroesService {
   loadingSubject = new BehaviorSubject<boolean>(false);
   loading$ = this.loadingSubject.asObservable();
 
-  showSpinner() {
+  showSpinner = (): void => {
     this.loadingSubject.next(true);
-  }
+  };
 
-  hideSpinner() {
+  hideSpinner = (): void => {
     this.loadingSubject.next(false);
-  }
+  };
 
-  getHeroes(): Observable<SuperHeroes[]> {
+  getHeroes = (): Observable<SuperHeroes[]> => {
     this.showSpinner();
     return of(this.heroes).pipe(
       delay(1000),
       finalize(() => this.hideSpinner())
     );
-  }
+  };
 
-  getHeroeById(id: number): Observable<SuperHeroes | undefined> {
+  getHeroeById = (id: number): Observable<SuperHeroes | undefined> => {
     const heroe = this.heroes.find((h) => h.id === id);
     return of(heroe);
-  }
+  };
 
-  searchHeroes(term: string): Observable<SuperHeroes[]> {
+  searchHeroes = (term: string): Observable<SuperHeroes[]> => {
     if (!term) {
       return of(this.heroes);
     }
@@ -56,19 +56,18 @@ export class SuperHeroesService {
         'No existen Héroes para el criterio de busqueda aplicado, intenta con otra opción';
       return of(this.heroes);
     }
-  }
+  };
 
-  createHero(heroe: SuperHeroes): Observable<SuperHeroes> {
+  createHero = (heroe: SuperHeroes): Observable<SuperHeroes> => {
     const newHero = { ...heroe };
     this.heroes.push(newHero);
     this.heroesSubject.next(this.heroes);
     return of(newHero);
-  }
+  };
 
-  updateHero(heroe: SuperHeroes, id: number): Observable<SuperHeroes> {
+  updateHero = (heroe: SuperHeroes, id: number): Observable<SuperHeroes> => {
     const heroId = typeof heroe.id === 'string' ? Number(heroe.id) : heroe.id;
     const index = this.heroes.findIndex((h) => h.id === id);
-    console.log(heroe, index);
     if (index !== -1) {
       this.heroes[index] = { id: heroId, name: heroe.name };
       this.heroesSubject.next(this.heroes);
@@ -76,9 +75,9 @@ export class SuperHeroesService {
     } else {
       return of();
     }
-  }
+  };
 
-  deleteHero(id: number): Observable<boolean> {
+  deleteHero = (id: number): Observable<boolean> => {
     const index = this.heroes.findIndex((h) => h.id === id);
     if (index !== -1) {
       this.heroes.splice(index, 1);
@@ -87,5 +86,5 @@ export class SuperHeroesService {
     } else {
       return of(false);
     }
-  }
+  };
 }

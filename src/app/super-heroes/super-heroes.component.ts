@@ -32,7 +32,7 @@ export class SuperHeroesComponent implements OnInit, OnChanges, OnDestroy {
   displayedColumns: string[] = ['id', 'nombre', 'acciones'];
   dataSource = new MatTableDataSource<SuperHeroes>([]);
   loading$: Observable<boolean>;
-  searchDisclaimer!:string;
+  searchDisclaimer!: string;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
@@ -54,28 +54,28 @@ export class SuperHeroesComponent implements OnInit, OnChanges, OnDestroy {
     this.setPaginator();
   }
 
-  getHeroes() {
+  getHeroes = (): void => {
     this.heroesSubscription.add(
       this.superHeroesService.getHeroes().pipe(
         finalize(() => {
           this.cdr.detectChanges();
           this.setPaginator();
         })
-      ).subscribe(data => {
+      ).subscribe((data) => {
         this.dataSource.data = data;
       })
     );
   }
 
-  setPaginator() {
+  setPaginator = (): void => {
     this.dataSource.paginator = this.paginator;
   }
 
-  onSearchChange(term: string) {
+  onSearchChange = (term: string): void => {
     this.heroesSubscription.add(
       this.superHeroesService.searchHeroes(term).subscribe((filteredHeroes) => {
-          this.dataSource.data = filteredHeroes;
-          this.searchDisclaimer = this.superHeroesService.heroDisclaimer;
+        this.dataSource.data = filteredHeroes;
+        this.searchDisclaimer = this.superHeroesService.heroDisclaimer;
         if (this.paginator) {
           this.setPaginator();
         }
@@ -83,21 +83,21 @@ export class SuperHeroesComponent implements OnInit, OnChanges, OnDestroy {
     );
   }
 
-  clearSearch() {
+  clearSearch = (): void => {
     this.searchInputValue = '';
     this.searchDisclaimer = '';
     this.getHeroes();
   }
 
-  goToAddNewHero() {
+  goToAddNewHero = (): void => {
     this.router.navigate(['super-heroes/form']);
   }
 
-  goToEditHero(id: number) {
+  goToEditHero = (id: number): void => {
     this.router.navigate([`super-heroes/form/${id}`]);
   }
 
-  deleteHero(id: number) {
+  deleteHero = (id: number): void => {
     this.heroesSubscription.add(
       this.superHeroesService.deleteHero(id).subscribe((data) => {
         if (data) {
@@ -108,13 +108,12 @@ export class SuperHeroesComponent implements OnInit, OnChanges, OnDestroy {
     );
   }
 
-  openDeleteDialog(id: number): void {
+  openDeleteDialog = (id: number): void => {
     const dialogRef = this.dialog.open(ActionsModalComponent, {
       width: '250px',
     });
     this.heroesSubscription.add(
       dialogRef.afterClosed().subscribe((result) => {
-        console.log(result);
         if (result) {
           this.deleteHero(id);
         }
@@ -122,7 +121,7 @@ export class SuperHeroesComponent implements OnInit, OnChanges, OnDestroy {
     );
   }
 
-  showSnackbar(message: string, action: string): void {
+  showSnackbar = (message: string, action: string): void => {
     this.snackBar.open(message, action, {
       duration: 3000,
       horizontalPosition: 'left',
@@ -130,7 +129,7 @@ export class SuperHeroesComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy = (): void => {
     this.heroesSubscription.unsubscribe();
   }
 }
