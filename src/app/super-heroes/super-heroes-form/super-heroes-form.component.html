@@ -1,0 +1,47 @@
+<div class="container container-column custom-margin">
+  <div class="mb">
+    <h1 class="primary-color">{{ title }}</h1>
+  </div>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="container container-column">
+      <mat-form-field>
+        <mat-label>ID de Heroe</mat-label>
+        <input matInput id="id" formControlName="id" />
+      </mat-form-field>
+      <div class="mb" *ngIf="form.get('id')?.invalid && form.get('id')?.touched">
+        <small *ngIf="form.get('id')?.hasError('required')"
+          >El id es requerido.</small
+        >
+        <small *ngIf="form.get('id')?.hasError('pattern')"
+          >Solo se permiten números.</small
+        >
+      </div>
+    </div>
+
+    <div class="container container-column">
+      <mat-form-field>
+        <mat-label>Nombre de Heroe</mat-label>
+        <input customUppercase matInput id="name" formControlName="name" />
+      </mat-form-field>
+
+      <div class="mb" *ngIf="form.get('name')?.invalid && form.get('name')?.touched">
+        <small *ngIf="form.get('name')?.hasError('required')"
+          >El nombre es requerido.</small
+        >
+        <small *ngIf="form.get('name')?.hasError('pattern')"
+          >Solo se permiten letras.</small
+        >
+      </div>
+    </div>
+
+    <div class="button-container">
+      <button mat-flat-button type="submit" [disabled]="form.invalid">
+        Enviar
+      </button>
+    </div>
+  </form>
+
+  <div class="button-container button-container-home">
+    <a mat-button [routerLink]="''">Volver al listado de Héroes</a>
+  </div>
+</div>
