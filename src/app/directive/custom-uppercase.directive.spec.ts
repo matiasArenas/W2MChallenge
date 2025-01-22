@@ -21,11 +21,11 @@ describe('CustomUppercaseDirective', () => {
     inputElement = fixture.nativeElement.querySelector('input');
   });
 
-  it('should create the directive', () => {
+  it('Debe crear la directiva', () => {
     expect(inputElement).toBeTruthy();
   });
 
-  it('should convert input value to uppercase on input event', () => {
+  it('Debe convertir el valor del input a uppercase cuando se ejecuta el evento del input', () => {
     inputElement.value = 'hello';
     inputElement.dispatchEvent(new Event('input'));
     inputElement.value = inputElement.value.toUpperCase();

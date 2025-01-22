@@ -11,6 +11,7 @@ import { mockSuperHeroes } from '../mock/super-heroes.mock';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ActionsModalComponent } from '../shared/actions-modal/actions-modal.component';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { fakeAsync, tick } from '@angular/core/testing';
 
 describe('SuperHeroesComponent', () => {
   let component: SuperHeroesComponent;
@@ -28,9 +29,15 @@ describe('SuperHeroesComponent', () => {
       'heroDisclaimer',
     ]);
     superHeroesServiceMock.getHeroes.and.returnValue(of(mockSuperHeroes));
+    superHeroesServiceMock.deleteHero.and.returnValue(of(true));
+
     routerMock = jasmine.createSpyObj('Router', ['navigate']);
     snackBarMock = jasmine.createSpyObj('MatSnackBar', ['open']);
     dialogMock = jasmine.createSpyObj('MatDialog', ['open']);
+
+    // Mock para MatDialog
+    const dialogRefMock = { afterClosed: jasmine.createSpy().and.returnValue(of(true)) };
+    dialogMock.open.and.returnValue(dialogRefMock as any);
 
     await TestBed.configureTestingModule({
       imports: [MatTableModule, MatPaginatorModule],
@@ -40,7 +47,7 @@ describe('SuperHeroesComponent', () => {
         { provide: Router, useValue: routerMock },
         { provide: MatSnackBar, useValue: snackBarMock },
         { provide: MatDialog, useValue: dialogMock },
-        provideAnimations(), 
+        provideAnimations(),
       ],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
@@ -73,7 +80,6 @@ describe('SuperHeroesComponent', () => {
     component.onSearchChange(searchTerm);
   
     expect(superHeroesServiceMock.searchHeroes).toHaveBeenCalledWith(searchTerm);
-    
     expect(component.dataSource.data).toEqual(filteredHeroes);
   });
 
@@ -98,11 +104,12 @@ describe('SuperHeroesComponent', () => {
     expect(routerMock.navigate).toHaveBeenCalledWith([`super-heroes/form/${heroId}`]);
   });
 
-  it('debe eliminar un héroe correctamente', () => {
+  it('debe eliminar un héroe correctamente', fakeAsync(() => {
     const heroId = 1;
-    superHeroesServiceMock.deleteHero.and.returnValue(of(true));
 
     component.deleteHero(heroId);
+
+    tick();
 
     expect(superHeroesServiceMock.deleteHero).toHaveBeenCalledWith(heroId);
     expect(snackBarMock.open).toHaveBeenCalledWith('Héroe eliminado exitosamente', 'Cerrar', {
@@ -110,19 +117,18 @@ describe('SuperHeroesComponent', () => {
       horizontalPosition: 'left',
       verticalPosition: 'bottom',
     });
-  });
+  }));
 
-  it('debe abrir el diálogo de confirmación para eliminar un héroe', () => {
+  it('debe abrir el diálogo de confirmación para eliminar un héroe', fakeAsync(() => {
     const heroId = 1;
-
-    const dialogRefMock = { afterClosed: () => of(true) };
-    dialogMock.open.and.returnValue(dialogRefMock as any);
 
     component.openDeleteDialog(heroId);
 
+    tick();
+
     expect(dialogMock.open).toHaveBeenCalledWith(ActionsModalComponent, { width: '250px' });
     expect(superHeroesServiceMock.deleteHero).toHaveBeenCalledWith(heroId);
-  });
+  }));
 
   it('debe cancelar la suscripción en ngOnDestroy', () => {
     const unsubscribeSpy = spyOn(component.heroesSubscription, 'unsubscribe');
